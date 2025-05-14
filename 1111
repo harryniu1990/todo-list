@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .todo-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #taskInput {
+            width: 70%;
+            padding: 8px;
+            margin-right: 5px;
+        }
+        button {
+            padding: 8px 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        li {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+        .delete-btn {
+            margin-left: auto;
+            background: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="todo-container">
+        <input type="text" id="taskInput" placeholder="输入新任务...">
+        <button onclick="addTask()">添加</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        // 从本地存储加载任务
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        // 初始化渲染
+        renderTasks();
+
+        // 添加任务函数
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const text = taskInput.value.trim();
+            
+            if (text) {
+                tasks.push({
+                    text: text,
+                    completed: false
+                });
+                taskInput.value = '';
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // 创建任务元素
+        function createTaskElement(task, index) {
+            const li = document.createElement('li');
+            
+            // 复选框
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.onchange = () => toggleTask(index);
+            
+            // 任务文本
+            const span = document.createElement('span');
+            span.textContent = task.text;
+            if (task.completed) {
+                span.className = 'completed';
+            }
+            
+            // 删除按钮
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.textContent = '删除';
+            deleteBtn.onclick = () => deleteTask(index);
+            
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            
+            return li;
+        }
+
+        // 渲染任务列表
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                taskList.appendChild(createTaskElement(task, index));
+            });
+        }
+
+        // 切换任务状态
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks();
+            renderTasks();
+        }
+
+        // 删除任务
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            saveTasks();
+            renderTasks();
+        }
+
+        // 保存到本地存储
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // 回车键添加任务
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+    </script>
+</body>
+</html>
