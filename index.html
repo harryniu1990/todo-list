@@ -9,254 +9,270 @@
     <style>
         :root {
             --primary-color: #4CAF50;
-            --danger-color: #ff4444;
-            --bg-color: #f9f9f9;
+            --danger-color: #ef5350;
+            --bg-color: #ffffff;
             --text-color: #333;
-            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --hover-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            max-width: 600px;
-            margin: 20px auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #f5f7fa;
             color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .tasks-container {
+            background: var(--bg-color);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
         }
 
         .todo-container {
-            background: var(--bg-color);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: var(--shadow);
+            margin: 20px auto;
         }
 
         .input-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 24px;
         }
 
         #taskInput {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
         }
 
         #taskInput:focus {
             outline: none;
             border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
         }
 
         .btn {
             padding: 12px 20px;
-            background: var(--primary-color);
-            color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            transition: transform 0.2s, background 0.3s;
-        }
-
-        .btn:hover {
-            background: #45a049;
-            transform: translateY(-1px);
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(1px);
         }
 
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        #addTaskBtn {
+            background: var(--primary-color);
+            color: white;
+            min-width: 100px;
+        }
+
+        #addTaskBtn:hover {
+            background: #43a047;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
         }
 
         .task-item {
             display: flex;
             align-items: center;
-            padding: 15px;
+            padding: 16px;
             background: white;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
         }
 
         .task-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border-color: #bdbdbd;
+            box-shadow: var(--shadow);
         }
 
         .task-checkbox {
-            margin-right: 12px;
+            margin-right: 16px;
             width: 20px;
             height: 20px;
+            border-radius: 4px;
             cursor: pointer;
+            position: relative;
+            appearance: none;
+            border: 2px solid #9e9e9e;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .task-checkbox:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .task-checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            left: 3px;
+            top: -1px;
         }
 
         .task-text {
             flex: 1;
-            font-size: 16px;
-            transition: color 0.3s;
+            font-size: 15px;
+            margin-right: 16px;
+            transition: all 0.3s ease;
         }
 
         .completed .task-text {
             text-decoration: line-through;
-            color: #888;
-        }
-
-        .delete-btn {
-            background: var(--danger-color);
-            padding: 8px 12px;
-            margin-left: 10px;
-            font-size: 14px;
-        }
-
-        .delete-btn:hover {
-            background: #ff3333;
-        }
-
-        .task-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #666;
-            font-size: 14px;
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 0;
-            color: #666;
-        }
-
-        .task-date {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-left: 10px;
-            font-size: 14px;
-            color: #666;
-            cursor: pointer;
-            background-color: white;
-        }
-
-        .task-date:hover {
-            border-color: var(--primary-color);
-        }
-
-        .task-date:focus {
-            outline: none;
-            border-color: var(--primary-color);
+            color: #9e9e9e;
         }
 
         .task-meta {
             display: flex;
             align-items: center;
-            margin-left: auto;
-            gap: 10px;
+            gap: 12px;
         }
 
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .todo-container {
-                padding: 15px;
-            }
-            
-            .input-group {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
+        .task-date {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: #666;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 90px;
+            text-align: center;
+        }
 
-            .task-item {
-                flex-wrap: wrap;
-            }
+        .task-date:hover {
+            border-color: var(--primary-color);
+            background-color: #fff;
+        }
 
-            .task-meta {
-                width: 100%;
-                margin-top: 10px;
-                justify-content: flex-end;
-            }
+        input[type="date"].task-date {
+            display: none;
+        }
+
+        .delete-btn {
+            background: #fff;
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+            padding: 8px 16px;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .task-stats {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            justify-content: space-around;
+            border: 1px solid var(--border-color);
         }
 
         .stats-container {
-            margin-top: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: var(--bg-color);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 24px;
         }
 
         .stats-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
             color: var(--text-color);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .stats-card {
-            background: var(--bg-color);
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .stats-card:hover {
+            background: #fff;
+            box-shadow: var(--shadow);
         }
 
         .stats-date {
             font-size: 14px;
             color: #666;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-weight: 500;
         }
 
         .stats-info {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
         .stats-row {
             display: flex;
             justify-content: space-between;
             font-size: 14px;
-        }
-
-        .stats-label {
-            color: #666;
-        }
-
-        .stats-value {
-            font-weight: bold;
-            color: var(--text-color);
+            line-height: 1.4;
         }
 
         .completion-rate {
-            margin-top: 8px;
-            height: 4px;
-            background: #eee;
-            border-radius: 2px;
+            margin-top: 12px;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
             overflow: hidden;
         }
 
@@ -265,20 +281,70 @@
             background: var(--primary-color);
             transition: width 0.3s ease;
         }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 20px;
+            color: #666;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            margin: 20px 0;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 16px;
+            }
+
+            .tasks-container, .stats-container {
+                padding: 20px;
+            }
+
+            .task-meta {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .task-date {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .delete-btn {
+                opacity: 1;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="todo-container">
-        <h1>我的待办清单 ✓</h1>
-        <div class="input-group">
-            <input type="text" id="taskInput" placeholder="输入新任务..." autocomplete="off">
-            <button id="addTaskBtn" class="btn">添加</button>
-        </div>
-        <ul id="taskList" class="task-list"></ul>
-        <div id="taskStats" class="task-stats"></div>
-        <div class="stats-container">
-            <div class="stats-title">任务统计分析</div>
-            <div id="statsGrid" class="stats-grid"></div>
+        <div class="main-container">
+            <div class="tasks-container">
+                <h1>我的待办清单 ✓</h1>
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="输入新任务..." autocomplete="off">
+                    <button id="addTaskBtn" class="btn">添加</button>
+                </div>
+                <ul id="taskList" class="task-list"></ul>
+                <div id="taskStats" class="task-stats"></div>
+            </div>
+            <div class="stats-container">
+                <div class="stats-title">任务统计分析</div>
+                <div id="statsGrid" class="stats-grid"></div>
+            </div>
         </div>
     </div>
     <script>
@@ -289,13 +355,15 @@
             }
 
             addTask(text) {
+                const now = new Date();
                 const task = {
                     id: Date.now(),
                     text: text,
                     completed: false,
-                    createdAt: new Date().toISOString(),
-                    dueDate: new Date().toISOString().split('T')[0] // 默认为今天
+                    createdAt: now.toISOString(),
+                    dueDate: now.toISOString().split('T')[0] // 确保日期格式为 YYYY-MM-DD
                 };
+                console.log('Adding new task:', task);
                 this.tasks.unshift(task);
                 this.save();
                 return task;
@@ -305,6 +373,7 @@
                 const task = this.tasks.find(t => t.id === id);
                 if (task) {
                     task.completed = !task.completed;
+                    console.log('Toggled task:', task);
                     this.save();
                 }
             }
@@ -313,6 +382,7 @@
                 const task = this.tasks.find(t => t.id === id);
                 if (task) {
                     task.dueDate = date;
+                    console.log('Updated task date:', task);
                     this.save();
                 }
             }
@@ -375,31 +445,61 @@
             }
 
             formatDate(dateString) {
+                if (!dateString) {
+                    return '未设置';
+                }
+
                 const date = new Date(dateString);
                 const today = new Date();
                 const tomorrow = new Date(today);
                 tomorrow.setDate(tomorrow.getDate() + 1);
 
-                if (dateString === today.toISOString().split('T')[0]) {
+                const todayStr = today.toISOString().split('T')[0];
+                const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+                if (dateString === todayStr) {
                     return '今天';
-                } else if (dateString === tomorrow.toISOString().split('T')[0]) {
+                } else if (dateString === tomorrowStr) {
                     return '明天';
                 }
-                return dateString.replace(/(\d{4})-(\d{2})-(\d{2})/, '$2月$3日');
+
+                // 确保日期字符串格式正确
+                const match = dateString.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+                if (match) {
+                    return `${match[2]}月${match[3]}日`;
+                }
+                return dateString; // 如果格式不匹配，返回原始字符串
             }
 
             formatDateForDisplay(dateString) {
-                const date = new Date(dateString);
-                const today = new Date();
-                const yesterday = new Date(today);
-                yesterday.setDate(yesterday.getDate() - 1);
-
-                if (dateString === today.toISOString().split('T')[0]) {
-                    return '今天';
-                } else if (dateString === yesterday.toISOString().split('T')[0]) {
-                    return '昨天';
+                if (!dateString) {
+                    return '未设置';
                 }
-                return `${date.getMonth() + 1}月${date.getDate()}日`;
+
+                try {
+                    const date = new Date(dateString);
+                    if (isNaN(date.getTime())) {
+                        return '日期无效';
+                    }
+
+                    const today = new Date();
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+
+                    const todayStr = today.toISOString().split('T')[0];
+                    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+                    if (dateString === todayStr) {
+                        return '今天';
+                    } else if (dateString === yesterdayStr) {
+                        return '昨天';
+                    }
+
+                    return `${date.getMonth() + 1}月${date.getDate()}日`;
+                } catch (e) {
+                    console.error('Date formatting error:', e);
+                    return '日期错误';
+                }
             }
 
             createTaskElement(task) {
@@ -425,7 +525,7 @@
                 const dateInput = document.createElement('input');
                 dateInput.type = 'date';
                 dateInput.className = 'task-date';
-                dateInput.value = task.dueDate;
+                dateInput.value = task.dueDate || '';
                 dateInput.addEventListener('change', (e) => {
                     this.taskManager.updateTaskDate(task.id, e.target.value);
                     this.render();
@@ -459,12 +559,26 @@
             }
 
             renderStats() {
+                console.log('Starting renderStats');
+                console.log('Current tasks:', this.taskManager.tasks);
+                
                 const analytics = new TaskAnalytics(this.taskManager.tasks);
                 const dailyStats = analytics.getDailyStats();
                 const statsGrid = document.getElementById('statsGrid');
+                
+                console.log('Daily stats to render:', dailyStats);
                 statsGrid.innerHTML = '';
 
+                if (dailyStats.length === 0) {
+                    statsGrid.innerHTML = '<div class="empty-state">暂无统计数据</div>';
+                    return;
+                }
+
                 dailyStats.forEach(day => {
+                    if (day.total === 0) {
+                        return; // 跳过没有任务的日期
+                    }
+
                     const card = document.createElement('div');
                     card.className = 'stats-card';
 
@@ -531,42 +645,57 @@
             }
 
             getDailyStats() {
-                const stats = new Map();
-                
-                // 获取最近7天的日期
-                const dates = [];
-                for (let i = 6; i >= 0; i--) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    dates.push(date.toISOString().split('T')[0]);
-                }
-
-                // 初始化每天的统计数据
-                dates.forEach(date => {
-                    stats.set(date, {
-                        total: 0,
-                        completed: 0,
-                        rate: 0
-                    });
-                });
-
-                // 统计任务数据
-                this.tasks.forEach(task => {
-                    const date = task.dueDate;
-                    if (stats.has(date)) {
-                        const dayStats = stats.get(date);
-                        dayStats.total++;
-                        if (task.completed) {
-                            dayStats.completed++;
-                        }
-                        dayStats.rate = dayStats.total ? (dayStats.completed / dayStats.total * 100) : 0;
+                try {
+                    const stats = new Map();
+                    
+                    // 获取最近7天的日期范围
+                    const dates = [];
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    for (let i = 6; i >= 0; i--) {
+                        const date = new Date(today);
+                        date.setDate(date.getDate() - i);
+                        const dateStr = date.toISOString().split('T')[0];
+                        dates.push(dateStr);
+                        
+                        // 初始化统计数据
+                        stats.set(dateStr, {
+                            total: 0,
+                            completed: 0,
+                            rate: 0
+                        });
                     }
-                });
 
-                return Array.from(stats.entries()).map(([date, stats]) => ({
-                    date,
-                    ...stats
-                }));
+                    // 确保所有任务都有有效的日期
+                    const validTasks = this.tasks.filter(task => {
+                        return task && task.dueDate && /^\d{4}-\d{2}-\d{2}$/.test(task.dueDate);
+                    });
+
+                    // 统计任务数据
+                    validTasks.forEach(task => {
+                        const taskDate = task.dueDate;
+                        if (stats.has(taskDate)) {
+                            const dayStats = stats.get(taskDate);
+                            dayStats.total++;
+                            if (task.completed) {
+                                dayStats.completed++;
+                            }
+                            dayStats.rate = Math.round((dayStats.completed / dayStats.total) * 100);
+                        }
+                    });
+
+                    // 转换为数组并按日期排序
+                    return Array.from(stats.entries())
+                        .sort(([dateA], [dateB]) => new Date(dateA) - new Date(dateB))
+                        .map(([date, stats]) => ({
+                            date,
+                            ...stats
+                        }));
+                } catch (error) {
+                    console.error('Error in getDailyStats:', error);
+                    return [];
+                }
             }
         }
 
